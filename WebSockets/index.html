@@ -1,4 +1,3 @@
-<!--This is response send to the frontend whenever it visits my server. This response is in the form of html(Ui)file.-->
 <!doctype html>
 <html lang="en">
   <head>
@@ -8,9 +7,24 @@
   </head>
   <body>
     <h1>WebSocket Server Demo</h1>
+    
     <script>
-        const {port} = window.location();//This helps us to get the port.
-        const connection = new WebSocket(`ws://localhost:${port}`); // this command is responsible for creating webSocket connection.
+        //Grab the complete host (domain + port)
+        const { host } = window.location;
+
+        //Establish the connection using the dynamic host:
+        const connection = new WebSocket(`ws://${host}`); 
+
+        //Connection to send ping message:
+        connection.onopen = () => {
+            console.log('Handshake successful! Sending ping...');
+            connection.send('ping from the client......');
+        };
+
+        //Add '.data' to log the actual string message:
+        connection.onmessage = (event) => {
+            console.log('Received from server:', event.data);
+        };
     </script>
   </body>
 </html>

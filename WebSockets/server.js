@@ -18,6 +18,7 @@ wsServer.on('connection', (websocket)=>{
     console.log('WebSocket Connection.....');
     websocket.on('message', (data)=>{    // Here "data" send by our frontend is recieved and used by our server 
         console.log('Websocket Message Recieved', data.toString());// frontend se message mila aur maine print kiya.
+        websocket.send("Pong, Hello ji from server.....");
     });
 })
 

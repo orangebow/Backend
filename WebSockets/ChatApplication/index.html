@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>WebSocket Server Demo</h1>
+    <div>
+    <input type="text" placeholder="Enter your message here" id="message-input"/>
+    <button id="message-send-button">Send</button>
+    <ul id="messages-container"></ul>  
+
+    </div>
+    <script>
+      //DOM
+      const messageInput = document.getElementById('message-input');
+      const messageSendButton = document.getElementById('message-send-button');
+      const messagesContainer = document.getElementById('messages-container');
+        
+      //Grab the complete host (domain + port)
+        const { host } = window.location;
+
+      //Establish the connection using the dynamic host:
+        const connection = new WebSocket(`ws://${host}`); 
+
+      //Connection to send ping message:
+        connection.onopen = () => {
+          connection.onmessage = (message) =>{
+            console.log("Message Recieved...", message);
+            const rawData = message.data;
+            const parsedData = JSON.parse(rawData);
+            const text = parsedData.message;
+
+            const li = document.createElement('li');
+            li.innerText = text;
+            messagesContainer.appendChild(li);
+          };  
+          messageSendButton.addEventListener('click', (ev)=>{
+              const value = messageInput.value;
+              connection.send(JSON.stringify({message : value}));
+            });
+        };
+
+        //Add '.data' to log the actual string message:
+        connection.onmessage = (event) => {
+            console.log('Received from server:', event.data);
+        };
+    </script>
+  </body>
+</html>
